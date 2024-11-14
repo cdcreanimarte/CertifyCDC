@@ -1,0 +1,85 @@
+<div class="certificate-container">
+  <!-- Formulario de entrada -->
+  <div class="form-section">
+    <div>Formulario para la generacion de certificados</div>
+    <form [formGroup]="certificateForm" (ngSubmit)="generateCertificate()">
+      <div class="form-group">
+        <label for="studentName">Nombre del Estudiante:</label>
+        <input type="text" id="studentName" formControlName="studentName" class="form-control">
+        <div class="error-message" *ngIf="certificateForm.get('studentName')?.touched && certificateForm.get('studentName')?.errors">
+          El nombre es requerido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="courseName">Nombre del Curso:</label>
+        <input type="text" id="courseName" formControlName="courseName" class="form-control">
+        <div class="error-message" *ngIf="certificateForm.get('courseName')?.touched && certificateForm.get('courseName')?.errors">
+          El nombre del curso es requerido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="hours">Cantidad de Horas:</label>
+        <input type="number" id="hours" formControlName="hours" class="form-control">
+        <div class="error-message" *ngIf="certificateForm.get('hours')?.touched && certificateForm.get('hours')?.errors">
+          La cantidad de horas debe ser mayor a 0
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Correo Electrónico:</label>
+        <input type="email" id="email" formControlName="email" class="form-control">
+        <div class="error-message" *ngIf="certificateForm.get('email')?.touched && certificateForm.get('email')?.errors">
+          Ingrese un correo electrónico válido
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" [disabled]="!certificateForm.valid">
+          {{ isGenerating ? 'Generando...' : 'Generar Certificado' }}
+        </button>
+        <button type="button" (click)="downloadCertificate()" [disabled]="!certificateGenerated || isGenerating">
+          {{ isGenerating ? 'Procesando...' : 'Descargar PDF' }}
+        </button>
+        <button type="button" (click)="sendEmail()" [disabled]="!certificateGenerated || isGenerating">
+          {{ isGenerating ? 'Enviando...' : 'Enviar por Email' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Vista previa del certificado -->
+   <div>Vista Previa</div>
+  <div class="certificate-preview" *ngIf="certificateGenerated">
+    <div #certificateElement class="certificate">
+      <div class="certificate-header">
+        <img src="images/logo.png" alt="Logo" class="logo">
+        <h1>Certificado de Culminación</h1>
+      </div>
+
+      <div class="certificate-content">
+        <p class="recipient">Se certifica que:</p>
+        <h2 class="student-name">{{ certificateForm.get('studentName')?.value }}</h2>
+        <div class="description-container">
+          <p class="description-text">Ha completado satisfactoriamente el curso de:</p>
+          <p class="course-name">{{ certificateForm.get('courseName')?.value }}</p>
+          <p class="hours-text">con una duración de {{ certificateForm.get('hours')?.value }} horas académicas.</p>
+        </div>
+      </div>
+
+      <div class="certificate-footer">
+        <div class="signature-section">
+          <img src="images/firma.png" alt="Firma del instructor" class="signature">
+          <p class="instructor">CDC-REANIMARTE Dummy</p>
+          <p class="instructor-title">Instructor</p>
+        </div>
+
+        <div class="date-section">
+          <p>Fecha de emisión:</p>
+          <p>{{ currentDate | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
